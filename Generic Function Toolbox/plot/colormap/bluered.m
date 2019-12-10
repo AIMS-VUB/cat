@@ -1,0 +1,3 @@
+function cm = bluered
+cm = [zeros(100, 2) linspace(1, 0.01, 100)'; 0 0 0; ...
+  linspace(0.01, 1, 100)' zeros(100, 2)];
