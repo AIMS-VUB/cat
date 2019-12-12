@@ -27,13 +27,8 @@ function eeg = cat_set_preprocess(setpath, options)
 %   .save       directory to save to, '.' to save in the original folder,
 %               overwriting the original file.
 
-<<<<<<< Updated upstream
-%   #2019.11.11 Alexander De Cock - Jorne Laton#
-%   #Authors: Alexander De Cock - Jorne Laton
-=======
-%   #2019.10.31 Alexander De Cock - Added ICA#
-%   #Authors: Jorne Laton and Alexander De Cock
->>>>>>> Stashed changes
+%   #2019.11.11 Alexander De Cock - Added ICA#
+%   #Authors: Jorne Laton and Alexander De Cock#
 
 if nargin < 2
   options = [];
