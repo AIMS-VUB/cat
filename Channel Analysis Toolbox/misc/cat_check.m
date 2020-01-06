@@ -1,4 +1,14 @@
 function cat_check(type)
+%CAT_CHECK Perform check before starting to execute
+%
+%   CAT_CHECK(type)
+%
+% Input
+%   type  string
+%           Options: 'parpool' = check if a parallel pool is active, warn if not.
+
+% Last edit:  20191218 Jorne Laton: Added help
+% Authors:    Jorne Laton
 
 switch type
   case 'parpool'

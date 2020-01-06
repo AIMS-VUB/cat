@@ -1,4 +1,4 @@
-function EEG_OUT = cat_set_rest(EEG, G)
+function EEG_OUT = cat_eeg_rest(EEG, G)
 % CAT_SET_REST Reference electrode standardisation technique
 %
 %   EEG_OUT = CAT_SET_REST(EEG, G)
