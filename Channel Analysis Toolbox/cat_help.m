@@ -37,8 +37,13 @@ function cat_help()
 %   plot  	plotting functions for different analysis results
 %   preproc	preprocessing methods for EEGlab file formats
 %   time  	time analysis methods
+%
+% Bugs in EEGlab and its plugins (see the readme for the solutions)
+%   Converting SPM to EEGlab
+%   Installing SASICA
 
-% #2019.12.10 Jorne Laton#
+% Last edit: 20191218 Jorne Laton
+% Authors:   Jorne Laton
 
 help cat_help
 
