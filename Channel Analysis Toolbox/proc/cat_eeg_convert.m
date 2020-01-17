@@ -1,8 +1,8 @@
-function cat_eeg_conv(src_folder, dst_folder, type, filename_pattern)
-%CAT_CONV Convert files in a directory to EEGlab files in another directory
+function cat_eeg_convert(src_folder, dst_folder, type, filename_pattern)
+%CAT_EEG_CONVERT Convert files in a directory to EEGlab files in another directory
 %   
-%   CAT_CONV(src_folder, dst_folder, type)
-%   CAT_CONV(src_folder, dst_folder, type, filename_pattern)
+%   CAT_EEG_CONVERT(src_folder, dst_folder, type)
+%   CAT_EEG_CONVERT(src_folder, dst_folder, type, filename_pattern)
 %
 % Input
 %   src_folder        folder containing the original files to be converted
@@ -13,9 +13,9 @@ function cat_eeg_conv(src_folder, dst_folder, type, filename_pattern)
 %                       Examples: '*' = all files (default)
 %                                 'P*' = all files starting with P
 %
-% See also POP_BIOSIG.
+%   See also POP_BIOSIG.
 
-% cat_check('parpool');
+cat_check('parpool');
 
 if nargin < 4
   filename_pattern = '*';

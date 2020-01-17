@@ -12,8 +12,14 @@ function cat_check(type)
 
 switch type
   case 'parpool'
-    if isempty(gcp('nocreate'))
-      warning(['This function is optimised for parallel use. '...
-        'It is recommended to start a parallel pool prior to running it.']);
+    try
+      if isempty(gcp('nocreate'))
+        warning(['This function is optimised for parallel use. '...
+          'It is recommended to start a parallel pool prior to running it.']);
+      end
+    catch
+      warning(['This function is optimised for parallel use, but '...
+        'you do not seem to have the Parallel Toolbox installed.'...
+        'You can install this with the Matlab installer, provided you have the license.']);
     end
 end

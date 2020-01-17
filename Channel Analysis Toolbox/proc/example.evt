@@ -1,0 +1,5 @@
+type	latency	duration
+EyesClosed	15	30
+EyesOpen	35	30
+EyesClosed	71	59
+EyesClosed	131	32
