@@ -1,29 +1,31 @@
 function eeg = cat_eeg_epoch_file(src_file, options)
 %CAT_EEG_EPOCH_FILE Single-file epocher
 %
-%   Creates epochs in marked valid signal parts in a set file.
+%   Creates epochs in marked valid signal parts in a set file, around every occurrence of a
+%   specific stimulus type or in the whole file by inserting fake events.
 %
 %   eeg = CAT_EEG_EPOCH_FILE(setfile, options)
 %
 %   src_file    full file name of the set file
 %   options     struct containing the following fields:
 %   Field       Value
-%   type        string to select method to cut epochs
+%   car         set to perform continuous artefact rejection (bad channels, bad data periods) and
+%               correction with Artefact Subspace Reconstruction (ASR). EEGlab's defaults are used.
+%   markertype  string to select method to cut epochs
 %               'stimulus': around stimulus events; in this case the eventcode is assumed to refer
 %               to stimulus events.
-%               'segments': cut epochs from continuous segments; in this case the eventcode should
-%               refer to relevant eeg segments (typical for rest data).
-%               'full': cut epochs from whole EEG, omitting margins at beginning and end of EEG if
-%               passed through options.margins (in seconds).
-%   eventcode   string denoting the event in the data, either a reoccurring stimulus or a marker of
-%               relevant segments.
-%   interval    lower and upper time limit (two-element vector, stimulus = 1) for the epoch in
-%               seconds, or epoch length (scalar, stimulus = 'segment' or 'full') for non-stimulus EEG.
-%   margin      for use with type = 'full', number of seconds to omit at the beginning and end of
-%               EEG.
+%               'segment': cut epochs from continuous segments; in this case the eventcode should
+%               refer to relevant eeg segments (typical for cleaned rest data).
+%               'none': cut epochs from whole EEG, this will add fake events spaced according to
+%               interval.
+%   eventcode   string denoting the event in the data, either a reoccurring stimulus, a marker of
+%               relevant segments or the name the fake events will get.
+%   interval    lower and upper time limit (two-element vector, markertype = 'stimulus') for the
+%               epoch in seconds, or epoch length (scalar, stimulus = 'segment' or 'none') for
+%               non-stimulus EEG.
 %   selection   indices of epochs to retain, use to remove overlapping epochs.
 %               Passing a scalar will retain 1/selection of the original
-%               amount of epochs, evenly spread.
+%               number of epochs, evenly spread.
 %               Passing 'auto', will automatically select only non-overlapping epochs.
 %   bc_interval interval in milliseconds for baseline correction
 
@@ -34,18 +36,20 @@ eeg = pop_loadset('filename', src_file);
 eeg = eeg_checkset(eeg);
 
 % Extract epochs
-switch options.type
-  % Cut epochs around stimuli with EEGlab's built-in epocher
+switch options.markertype
   case 'stimulus'
+    % Cut epochs around stimuli with EEGlab's built-in epocher
     eeg = pop_epoch(eeg, options.eventcode, options.interval);
+  case 'segment'
     % Get epochs from relevant segments, marked by events with durations
-  case 'segments'
-    eeg = cat_eeg_epoch_segments(eeg, options);
-    % Get epochs from the whole EEG, omitting margins at beginning and end of EEG
-  case 'full'
-    eeg = cat_eeg_epoch_full(eeg, options);
+    % This will insert a marker for each epoch
+    eeg = cat_eeg_epoch_segment(eeg, options);
+  case 'none'
+    % Get epochs from the whole EEG
+    % This will insert a marker for each epoch
+    eeg = cat_eeg_epoch_nomarkers(eeg, options);
   otherwise
-    error('Options.type should be one of ''stimulus'', ''segments'' or ''full''');
+    error('Options.type should be one of ''stimulus'', ''segment'' or ''none''');
 end
 
 % Remove baseline
