@@ -4,6 +4,8 @@ raw_folder = '~/Documents/Testdata/0.Source';
 conv_folder = '~/Documents/Testdata/1.Converted';
 proc_folder = '~/Documents/Testdata/2.Preprocessed';
 epoch_folder = '~/Documents/Testdata/3.Epochs';
+ica_folder = '~/Documents/Testdata/4.ICA';
+ready_folder = '~/Documents/Testdata/5.Ready';
 type = 'edf'; % or 'spm' or 'fif'
 
 %% Creates a parallel pool if none yet
@@ -44,9 +46,27 @@ cat_eeg_preprocess(conv_folder, proc_folder, options);
 
 %% Epoching
 options = [];
-options.type = 'full'; % in this example, we are using resting-state EEG with no markers
-options.margin = 10;
-options.eventcode = 'EyesClosed'; % we will mark the epochs 'EyesClosed'
+options.car = true; % continuous artefact rejection, correct where possible with artefact subspace reconstruction
+options.markertype = 'none'; % in this example, we are using resting-state EEG with no markers
+options.eventcode = {'EyesClosed'}; % we will mark the epochs 'EyesClosed'
 options.interval = 4.096; % the length of the epochs
 
-cat_eeg_epoch(proc_folder, epoch_folder, options);
+chanlocs = cat_eeg_epoch(proc_folder, epoch_folder, options);
+
+%% ICA for Artefact rejection
+options = [];
+options.ica = 'binica';
+
+cat_eeg_ica(epoch_folder, ica_folder, options);
+
+%% Select artefactual components and remove them, interpolate removed bad channels
+if ~exist('chanlocs', 'var')
+  load('chanlocs19.mat');
+end
+options = [];
+options.automark = 'mara'; % use mara for automatic component classification
+options.marathresh = 0.9; % only remove components with a higher probability than this
+options.autoremove = true; % do not only mark components for removal, remove them at the same time
+options.chanlocs = chanlocs; % channels before removal of bad channels
+
+cat_eeg_removeic(ica_folder, ready_folder, options);
