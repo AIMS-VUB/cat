@@ -199,7 +199,7 @@
 % 03-25-02 added details to "Unknown parameter" warning -sm & ad
 
 % function [handle,Zi,grid,Xi,Yi] = topoplot(Values,loc_file,varargin)
-function [x, y] = cat_set_topoplot(Values,loc_file,varargin)
+function [x, y] = cat_eeg_topoplot(Values,loc_file,varargin)
 
 %
 %%%%%%%%%%%%%%%%%%%%%%%% Set defaults %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

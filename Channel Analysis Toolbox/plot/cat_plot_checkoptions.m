@@ -9,8 +9,8 @@ function [options] = cat_plot_checkoptions(E, options)
 %   E             'CAT' object, with default fields filenames and channels.labels
 %   options       option struct containing the following fields:
 %   Field         Value
-%   .plottype     'matrix' or 'headinhead'. For headinhead, E needs to contain
-%                 channels.positions.
+%   .plottype     'matrix', 'headinhead' or 'network'. For headinhead and network, E needs to
+%                 contain channels.positions.
 %   .subject      scalar, index of specific subject of whom to show the plot, or
 %                 empty to show the group average.
 %   .chanindices  vector, selection of channels to plot. Default all channel

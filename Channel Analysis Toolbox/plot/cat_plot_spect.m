@@ -20,8 +20,7 @@ end
 if ~isfield(options, 'interval') || isempty(options.interval)
   options.interval = 1 : length(E.spect.freqs);
 else
-  options.interval = E.spect.freqs >= options.interval(1)...
-    & E.spect.freqs < options.interval(2);
+  options.interval = E.spect.freqs >= options.interval(1) & E.spect.freqs < options.interval(2);
 end
 if isfield(options, 'region')
   options.chanlabels = E.spect.peaks.regions.channels{options.region};
@@ -60,7 +59,7 @@ else
 end
 
 % plottitle = [E.group id subjectname ' spectrum'];
-plottitle = [E.group id region ' spectra'];
+plottitle = [E.group id subjectname region ' spectra'];
 
 %% Plot
 plot(E.spect.freqs(options.interval), spect, 'LineWidth', 2)
@@ -78,7 +77,7 @@ end
 set(gca, 'FontSize', options.fontsize)
 set(findall(gcf, 'type', 'text'), 'fontSize', options.fontsize)
 xlabel('Frequency (Hz)');
-ylabel('Power (\muVÂ²/Hz)');
+ylabel('Power (\muVA²/Hz)');
 title(plottitle);
 legend(legenda);
 
