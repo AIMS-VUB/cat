@@ -4,7 +4,7 @@ function cat_save(E, folder, renumber)
 %   It will be saved as follows:
 %   folder/paradigm_event_groupname.mat
 %   and the original time signals will be in individual files in
-%   folder/paradigm_event_groupname/
+%   folder/data/
 %
 %   If folder is omitted, a selection dialog will pop up.
 %
@@ -34,7 +34,7 @@ if E.timeseries.changed && isfield(E.timeseries, 'epochs')
   
   % Save raw individual data
   for f = 1 : length(timeseries_epochs)
-    data = extract(timeseries_epochs, f); %#ok<*NASGU>
+    data = extract(timeseries_epochs, f);
     if renumber
       nr = num2str(f);
       nr_str = [repmat('0', 1, 3 - length(nr)) nr];

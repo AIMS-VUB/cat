@@ -10,7 +10,8 @@ function log = cat_eeg_ica(src_folder, dst_folder, options)
 %   Field       Value
 %   ica         ICA implementation to use
 %               'runica': MATLAB, slow (default)
-%               'binica': MEX, quick but requires extra effort on Windows
+%               'binica': binary, quick but requires extra effort on
+%               Windows: https://sccn.ucsd.edu/wiki/Binica
 
 % Last edit: 20200121 Jorne Laton - created
 % Authors:   Jorne Laton
@@ -32,6 +33,11 @@ parfor f = 1 : n_files
 end
 
 log = [filenames, log];
-unix('rm binica*');
+comp = computer;
+if strcmp(comp(1:2), 'PC')
+  dos('del binica*');
+else
+  unix('rm binica*');
+end
 
 end
