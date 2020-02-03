@@ -6,14 +6,20 @@ function cat_save(E, folder, renumber)
 %   and the original time signals will be in individual files in
 %   folder/data/
 %
-%   If folder is omitted, a selection dialog will pop up.
+%   If folder is omitted, E is checked a field folder where it was loaded from, overwriting the
+%   previously saved struct. If such info is not available in the struct, a selection dialog will
+%   pop up.
 %
 %   See also: CAT_LOAD.
 
 if nargin < 3
   renumber = isfield(E, 'renumbered') && E.renumbered;
   if nargin < 2
-    folder = uigetdir;
+    try
+      folder = E.folder;
+    catch
+      folder = uigetdir;
+    end
   end
 end
 
@@ -49,6 +55,7 @@ end
 
 E.timeseries = rmfield(E.timeseries, 'epochs');
 E.renumbered = renumber;
+E.folder = folder;
 
 % Save main struct
 save(fullfile(folder, savename), 'E');
