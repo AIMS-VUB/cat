@@ -32,3 +32,7 @@ for s = 1 : length(RHS.filenames)
   cat_plot_spect(RHS, plotoptions);
   pause
 end
+
+%% Save struct with spect added
+cat_save(LHS); % Overwrite previously saved
+cat_save(RHS);
