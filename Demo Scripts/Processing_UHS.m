@@ -1,11 +1,13 @@
 %% Folder path setup
 % Change according to your situation
-raw_folder = '~/Documents/Testdata/0.Source';
-conv_folder = '~/Documents/Testdata/1.Converted';
-proc_folder = '~/Documents/Testdata/2.Preprocessed';
-epoch_folder = '~/Documents/Testdata/3.Epochs';
-ica_folder = '~/Documents/Testdata/4.ICA';
-ready_folder = '~/Documents/Testdata/5.Ready';
+root_folder = 'D:\AD-EP-HS v2\SET\';
+raw_folder = 'D:\AD-EP-HS v2\EDF\Modified\UHS';
+conv_folder = fullfile(root_folder, '1.Converted');
+proc_folder = fullfile(root_folder, '2.Preprocessed');
+epoch_folder = fullfile(root_folder, '3.Epochs');
+ica_folder = fullfile(root_folder, '4.ICA');
+ready_folder = fullfile(root_folder, '5.Ready');
+cat_folder = 'D:\AD-EP-HS v2\CAT\';
 type = 'edf'; % or 'spm' or 'fif'
 
 %% Creates a parallel pool if none yet
@@ -18,6 +20,7 @@ end
 %% Convert from EDF to EEGlab format
 % This will convert the raw files into EEGlab format and store them in another folder, conv_folder.
 cat_eeg_convert(raw_folder, conv_folder, type);
+cat_eeg_importevents(conv_folder);
 
 %% Pre-processing
 % Channels to retain, we assume the default 19-channel setup. Other channels are removed.
@@ -47,7 +50,7 @@ cat_eeg_preprocess(conv_folder, proc_folder, options);
 %% Epoching
 options = [];
 options.car = true; % continuous artefact rejection, correct where possible with artefact subspace reconstruction
-options.markertype = 'none'; % in this example, we are using resting-state EEG with no markers
+options.markertype = 'segment'; % in this example, we are using resting-state EEG with no markers
 options.eventcode = {'EyesClosed'}; % we will mark the epochs 'EyesClosed'
 options.interval = 4.096; % the length of the epochs
 
@@ -56,8 +59,8 @@ chanlocs = cat_eeg_epoch(proc_folder, epoch_folder, options);
 %% ICA for Artefact rejection
 options = [];
 options.ica = 'binica';
-
-cat_eeg_ica(epoch_folder, ica_folder, options);
+% Calculate components and save the resulting files. Separate step, because computationally heavy
+log = cat_eeg_ica(epoch_folder, ica_folder, options); 
 
 %% Select artefactual components and remove them, interpolate removed bad channels
 if ~exist('chanlocs', 'var')
@@ -67,6 +70,16 @@ options = [];
 options.automark = 'mara'; % use mara for automatic component classification
 options.marathresh = 0.9; % only remove components with a higher probability than this
 options.autoremove = true; % do not only mark components for removal, remove them at the same time
-options.chanlocs = chanlocs; % channels before removal of bad channels
+options.chanlocs = chanlocs; % channels before removal of bad channels, for interpolation of these
 
 cat_eeg_removeic(ica_folder, ready_folder, options);
+
+%% Load all files per group into CAT struct
+LHS = cat_eeg_loadfolder(ready_folder, struct('n_epochs', 'all', 'pattern', 'L*'));
+RHS = cat_eeg_loadfolder(ready_folder, struct('n_epochs', 'all', 'pattern', 'R*'));
+LHS.paradigm = 'Rest'; % Add this manually to the struct, will be used for saving and plotting
+RHS.paradigm = 'Rest';
+
+%% Save it all
+cat_save(LHS, cat_folder);
+cat_save(RHS, cat_folder);
