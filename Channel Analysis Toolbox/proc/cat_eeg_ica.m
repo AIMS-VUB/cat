@@ -22,6 +22,8 @@ cat_check('parpool');
 n_files = length(filepaths);
 log = cell(n_files, 1);
 
+[~, ~] = mkdir(dst_folder);
+
 parfor f = 1 : n_files
   try
     eeg = cat_eeg_ica_file(filepaths{f}, options);
@@ -36,8 +38,10 @@ log = [filenames, log];
 comp = computer;
 if strcmp(comp(1:2), 'PC')
   dos('del binica*');
+  dos('del bias_after_adjust');
 else
   unix('rm binica*');
+  unix('rm bias_after_adjust');
 end
 
 end

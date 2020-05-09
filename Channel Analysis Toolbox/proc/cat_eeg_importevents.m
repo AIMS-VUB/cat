@@ -1,4 +1,4 @@
-function cat_eeg_importevents(src_folder, append)
+function cat_eeg_importevents(src_folder, pattern, append)
 %CAT_EEG_IMPORTEVENTS - Adds events from evt files to the according set files
 %
 %   CAT_EEG_IMPORTEVENTS(folder) adds events stored in event files (.evt) in a folder to
@@ -22,12 +22,17 @@ function cat_eeg_importevents(src_folder, append)
 
 %   #2019.04.05 Jorne Laton#
 
-if nargin < 2
+% TODO make robust against lacking event files
+
+if nargin < 3
   append = 'yes';
+  if nargin < 2
+    pattern = '*.evt';
+  end
 end
 
 setfiles = listfiles(src_folder, '*.set');
-evtfiles = listfiles(src_folder, '*.evt');
+evtfiles = listfiles(src_folder, pattern);
 n_files = length(setfiles);
 eegs = cell(n_files, 1);
 eventfields = {'type' 'latency' 'duration'};

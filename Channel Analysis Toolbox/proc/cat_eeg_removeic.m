@@ -1,4 +1,4 @@
-function cat_eeg_removeic(src_folder, dst_folder, options)
+function log = cat_eeg_removeic(src_folder, dst_folder, options)
 %CAT_EEG_REMOVEIC Remove artefactual independent components and interpolate removed bad channels
 %
 %   eeg = CAT_EEG_REMOVEIC(src_folder, dst_folder, options)
@@ -18,11 +18,22 @@ function cat_eeg_removeic(src_folder, dst_folder, options)
 
 cat_check('parpool');
 
-filepaths = listfiles(src_folder, '*.set');
+[filepaths, filenames] = listfiles(src_folder, '*.set');
+n_files = length(filepaths);
+log = cell(n_files, 1);
 
-parfor f = 1 : length(filepaths)
-  eeg = cat_eeg_removeic_file(filepaths{f}, options);
-  pop_saveset(eeg, 'filepath', dst_folder, 'filename', eeg.filename);
+[~, ~] = mkdir(dst_folder);
+
+for f = 1 : n_files
+  try
+    eeg = cat_eeg_removeic_file(filepaths{f}, options);
+    pop_saveset(eeg, 'filepath', dst_folder, 'filename', eeg.filename);
+    log{f} = 'ok';
+  catch e
+    log{f} = e;
+  end
 end
+
+log = [filenames, log];
 
 end

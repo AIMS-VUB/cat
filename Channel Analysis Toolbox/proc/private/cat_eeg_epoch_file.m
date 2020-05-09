@@ -29,7 +29,7 @@ function eeg = cat_eeg_epoch_file(src_file, options)
 %               Passing 'auto', will automatically select only non-overlapping epochs.
 %   bc_interval interval in milliseconds for baseline correction
 
-% Last edit: 20200114 Jorne Laton - streamlined
+% Last edit: 20200225 Jorne Laton - streamlined
 % Authors:   Jorne Laton
 
 eeg = pop_loadset('filename', src_file);
@@ -38,6 +38,14 @@ eeg = eeg_checkset(eeg);
 % Extract epochs
 switch options.markertype
   case 'stimulus'
+    % Reject data using clean rawdata and ASR
+    if isfield(options, 'car') && options.car
+      eeg = cat_eeg_clean_artifacts(eeg, 'FlatlineCriterion',5,'ChannelCriterion',0.8,...
+        'LineNoiseCriterion',4,'Highpass','off','BurstCriterion',20,'WindowCriterion',0.25,...
+        'BurstRejection','off','Distance','Euclidian','WindowCriterionTolerances',[-Inf 7],...
+        'IgnoredChannels', options.ignore_channels);
+    end
+    eeg = eeg_checkset(eeg);
     % Cut epochs around stimuli with EEGlab's built-in epocher
     eeg = pop_epoch(eeg, options.eventcode, options.interval);
   case 'segment'
@@ -54,6 +62,8 @@ end
 
 % Remove baseline
 if isfield(options, 'bc_interval')
+  % Ensure bc_interval is within epoch
+  options.bc_interval = [max(options.bc_interval(1), eeg.xmin), min(options.bc_interval(2), eeg.xmax)];
   eeg = pop_rmbase(eeg, options.bc_interval);
 end
 

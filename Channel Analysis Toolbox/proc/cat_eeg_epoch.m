@@ -32,17 +32,22 @@ function chanlocs = cat_eeg_epoch(src_folder, dst_folder, options)
 %   bc_interval interval in milliseconds for baseline correction
 %
 %Output
-%   options     only if options.car was set. This struct contains the following field:
 %   chanlocs    original channels before removing bad channels. Necessary for interpolation.
 %
 %   See also CAT_EEG_EPOCH_FILE.
 
-% Last edit: 20200122 Jorne Laton - added CAR and ASR
+% Last edit: 20200225 Jorne Laton - added CAR and ASR
 % Authors:   Jorne Laton
 
 cat_check('parpool');
 
 filepaths = listfiles(src_folder, '*.set');
+
+[~, ~] = mkdir(dst_folder);
+
+if ~isfield(options, 'ignore_channels')
+  options.ignore_channels = {};
+end
 
 parfor f = 1 : length(filepaths)
   eeg = cat_eeg_epoch_file(filepaths{f}, options);

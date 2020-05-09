@@ -1,4 +1,4 @@
-function cat_eeg_preprocess(src_folder, dst_folder, options)
+function log = cat_eeg_preprocess(src_folder, dst_folder, options)
 %%CAT_EEG_PREPROCESS Pre-processing for folders containing EEGlab files
 %   
 %   CAT_EEG_PREPROCESS(src_folder, dst_folder, options) preprocesses all EEGlab
@@ -32,7 +32,7 @@ function cat_eeg_preprocess(src_folder, dst_folder, options)
 %
 %   See also CAT_EEG_PREPROCESS_FILE.
 
-% Last edit: 20200113 Jorne Laton - extended help
+% Last edit: 20200128 Jorne Laton - added try-catch and log
 % Authors:   Jorne Laton
 
 cat_check('parpool');
@@ -42,11 +42,21 @@ if nargin < 3
 end
 options.save = dst_folder;
 
-src_files = listfiles(src_folder, '*.set');
-n_file = length(src_files);
+[filepaths, filenames] = listfiles(src_folder, '*.set');
+n_files = length(filepaths);
+log = cell(n_files, 1);
 
-parfor f = 1 : n_file
-  cat_eeg_preprocess_file(src_files{f}, options);
+[~, ~] = mkdir(dst_folder); % makes a folder if it doesn't exist. The ~s prevent warnings.
+
+parfor f = 1 : n_files
+  try
+    cat_eeg_preprocess_file(filepaths{f}, options);
+    log{f} = 'ok';
+  catch e
+    log{f} = e;
+  end
 end
+
+log = [filenames, log];
 
 end

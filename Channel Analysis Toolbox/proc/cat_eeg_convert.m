@@ -37,6 +37,8 @@ src_files = listfiles(src_folder, [filename_pattern '.' type]);
 
 n_file = length(src_files);
 
+[~, ~] = mkdir(dst_folder); % makes a folder if it doesn't exist. The ~s prevent warnings.
+
 parfor f = 1 : n_file
   disp(['Converting ' src_files{f}])
   eeg = conv2set(src_files{f});
