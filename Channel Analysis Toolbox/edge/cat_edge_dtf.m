@@ -2,14 +2,13 @@ function E = cat_edge_dtf(E, bands, options)
 %CAT_EDGE_DTF - Directed transfer function
 %
 %   Calculates the directed transfer function. Its result is stored in the
-%   added field 'edges.dtf',  which contains a 4D matrix, with dimensions: channels,
-%   channels, epochs, subjects and a 3D matrix containing the average over the
-%   epochs.
+%   added field 'edges.dtf',  which contains a 3D matrix, with dimensions: channels,
+%   channels and subjects.
 %
 %   E = CAT_EDGE_DTF(E, bands, options)
 %
 %   E             struct containing the fields 'timeseries' and 'fs'
-%   bands         struct containign the fields 'labels' and 'intervals'
+%   bands         struct containing the fields 'labels' and 'intervals'
 %   options       struct containing the following fields
 %   .order        model order. Default 4.
 %   .windowlength length of the window
