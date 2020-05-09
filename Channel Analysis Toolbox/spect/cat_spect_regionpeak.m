@@ -24,12 +24,18 @@ for r = 1 : n_region
   ch_ind = ismember(E.channels.labels, regions.channels{r});
   ampls = E.spect.peaks.ampls(:, ch_ind);
   freqs = E.spect.peaks.freqs(:, ch_ind);
-  [E.spect.peaks.regions.ampls(:, r), ind] = max(ampls, [], 2);
+  [amp, ind] = max(ampls, [], 2);
 
   % Calculate linear indices in whole matrix from row-only indices
   ind_lin = sub2ind(size(freqs), (1:length(ind))', ind);  
-  E.spect.peaks.regions.freqs(:, r) = freqs(ind_lin);
-
+  freq = freqs(ind_lin);
+  
+%   if 
+%     OPTIONAL TODO: verify median/mode frequency equal to max
+%   end
+  
+  E.spect.peaks.regions.freqs(:, r) = freq;
+  E.spect.peaks.regions.ampls(:, r) = amp;
 end
 
 E.spect.peaks.regions.channels = regions.channels;
