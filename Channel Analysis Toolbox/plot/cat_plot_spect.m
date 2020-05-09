@@ -67,7 +67,8 @@ if isfield(options, 'ylimits')
   options.interval = find(options.interval);
   axis([-inf inf options.ylimits]);
 end
-if isfield(options, 'region') && ~isnan(E.spect.peaks.regions.ampls(options.subject, options.region))
+if isfield(options, 'region') && length(options.subject) == 1 && ...
+    ~isnan(E.spect.peaks.regions.ampls(options.subject, options.region))
   hold on
   plot(E.spect.peaks.regions.freqs(options.subject, options.region), ...
     E.spect.peaks.regions.ampls(options.subject, options.region), 'rx', 'MarkerSize', 20, 'LineWidth', 2)
@@ -77,13 +78,18 @@ end
 set(gca, 'FontSize', options.fontsize)
 set(findall(gcf, 'type', 'text'), 'fontSize', options.fontsize)
 xlabel('Frequency (Hz)');
-ylabel('Power (\muVA²/Hz)');
+ylabel('Power (\muVAÂ²/Hz)');
 title(plottitle);
 legend(legenda);
 
 %% Save it
 if options.save
-%   subjectname = strrep(subjectname, ' ', '_');
   region = strrep(region, ' ', '_');
-  save2pdf(fullfile(options.save, [E.paradigm '_' E.event '_' E.group id region  '_spectra']));
+  filepath = fullfile(options.save, [E.paradigm '_' E.event '_' E.group id region  '_spectra']);
+  if strcmp(options.savetype, 'pdf')
+    save2pdf(filepath);
+  else
+    saveas(gcf, filepath, options.savetype);
+  end
+
 end

@@ -64,6 +64,10 @@ switch options.plottype
     end
     showcs(M, E.channels.positions, options);
   case 'network'
+    if isempty(options.scale)
+      m = max(max(abs(M)));
+      options.scale = [-m, m];
+    end
     hold on
     if strcmp(edgetype, 'dtf')
       G = digraph(M', E.channels.labels, 'omitselfloops');
@@ -86,7 +90,7 @@ switch options.plottype
       p.ArrowSize = 15;
     catch
     end
-    text(-0.5, 0.45, options.mytext);
+    text(-0.45, 0.55, options.mytext);
     hold off
     axis off
     format_figure(options);
