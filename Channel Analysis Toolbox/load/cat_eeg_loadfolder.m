@@ -31,7 +31,7 @@ n_files = length(filenames);
 
 % If not in options, find minimum number of epochs over all files
 if ~isfield(options, 'n_epochs')
-  options.n_epochs = cat_eeg_leastepochs(filepaths, E.filenames);
+  options.n_epochs = cat_eeg_leastepochs(filepaths, filenames);
 end
 
 % Get common fields and data dimensions from first file
@@ -44,14 +44,13 @@ if strcmp(options.n_epochs, 'all')
   epochs = cell(n_files, 1);
   parfor f = 1 : n_files
     temp = cat_eeg_loaddata(filepaths{f}, options);
-%     epochs{f} = zeros(size(temp));
     epochs{f} = temp;
     epochs{f} = permute(epochs{f}, [2 1 3]);
   end
 else
   temp = cat_eeg_loaddata(filepaths{1}, options);
-  epochs = zeros(length(E.channels.labels), temp.pts, options.n_epochs, n_files);
-  epochs(:, :, :, 1) = temp.data;
+  epochs = zeros([size(temp) n_files]);
+  epochs(:, :, :, 1) = temp;
   parfor f = 2 : n_files
       temp = cat_eeg_loaddata(filepaths{f}, options);
       epochs(:, :, :, f) = temp;
