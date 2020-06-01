@@ -14,7 +14,7 @@ function cat_save(E, folder, no_renumber)
 %   See also: CAT_LOAD.
 
 if nargin < 3
-  renumber = isfield(E, 'renumbered') && E.renumbered;
+  no_renumber = isfield(E, 'renumbered') && ~E.renumbered;
   if nargin < 2
     try
       folder = E.folder;
