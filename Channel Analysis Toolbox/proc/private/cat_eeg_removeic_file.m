@@ -20,21 +20,30 @@ eeg = eeg_checkset(eeg);
 
 % Automatically mark ICA components to reject
 if isfield(options, 'automark')
-    switch options.automark
-      case 'mara'
-        % selected components are stored in EEG.reject.gcompreject
-        [~, eeg] = processMARA([], eeg);
-        if isfield(options, 'marathresh')
-          eeg.reject.gcompreject = eeg.reject.MARAinfo.posterior_artefactprob > options.marathresh;
-        end
-      otherwise
-        error('Choose an appropriate automark option. Available options are: ''mara''');
+  if ~iscell(options.automark)
+    options.automark = {options.automark};
+  end
+  if contains(options.automark, 'mara')
+    % selected components are stored in EEG.reject.gcompreject
+    [~, eeg] = processMARA([], eeg);
+    if isfield(options, 'marathresh')
+      eeg.reject.gcompreject = eeg.reject.MARAinfo.posterior_artefactprob > options.marathresh;
     end
-    % Remove marked components
-    if isfield(options, 'autoremove')
-      eeg = pop_subcomp(eeg, find(eeg.reject.gcompreject), 0);
-      eeg = eeg_checkset(eeg);
-    end
+  end
+  if contains(options.automark, 'eogcorr')
+    cfg.EOGcorr.enable = 1;
+    cfg.EOGcorr.Heogchannames = 'HEOG';
+    cfg.EOGcorr.corthreshH = 'auto 4';
+    cfg.EOGcorr.Veogchannames = 'VEOG';
+    cfg.EOGcorr.corthreshV = 'auto 4';
+    [eeg2, ~] = eeg_SASICA(eeg, cfg);
+    eeg.reject.gcompreject = eeg.reject.gcompreject | eeg2.reject.gcompreject;
+  end
+  % Remove marked components
+  if isfield(options, 'autoremove')
+    eeg = pop_subcomp(eeg, find(eeg.reject.gcompreject), 0);
+    eeg = eeg_checkset(eeg);
+  end
 end
 
 % Interpolate if a channel was removed during bad channel detection in cat_eeg_epoch

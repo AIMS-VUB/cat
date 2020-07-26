@@ -24,7 +24,7 @@ log = cell(n_files, 1);
 
 [~, ~] = mkdir(dst_folder);
 
-for f = 1 : n_files
+parfor f = 1 : n_files
   try
     eeg = cat_eeg_removeic_file(filepaths{f}, options);
     pop_saveset(eeg, 'filepath', dst_folder, 'filename', eeg.filename);
