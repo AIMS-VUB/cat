@@ -1,38 +1,58 @@
-function [filepaths, filenames] = listfiles(folder, pattern, recursive)
+function [filepaths, filenames] = listfiles(folder, pattern, recursive, filter)
 %LISTFILES lists files in a folder
-%   filenames = listfiles(folder, pattern, recursive) is a wrapper
+%   [filepaths, filenames] = listfiles(folder, pattern, recursive) is a wrapper
 %   around the built-in non-recursive Matlab function dir and the recursive
 %   subdir function and works in a similar way.
 %
 %   folder      folder to search
-%   pattern     regular expression to select particular files, or descend one
+%   pattern     simple pattern to select particular files, or descend one
 %               level. Usage examples:
 %               '*.mat' selects all .mat files directly under folder
 %               '*\*.mat' selects only .mat files in subfolders directly under
 %               folder
 %   recursive   set to find files in all subfolders, on all levels
+%   filter      regular expression used to filter files. If filename does
+%               not match the file is ommitted from the list (see REGEXP)
 %
 %   filepaths   list of full filenames
 %   filenames   list of filenames, without containing folders. Is the same
 %               as filepaths when recursive is set.
 %
 %   See also DIR and SUBDIR.
+%
+%   # 2021.03.06 Alexander De Cock #
 
-%   # 2018.04.06 Jorne Laton #
-
-if nargin > 2 && recursive
-    f = @subdir;
-else
-  recursive = false;
-    f = @dir;
-    if nargin < 2
-      pattern = '*.*';
-    end
+% set default arguments
+if ~exist('recursive','var') || isempty(recursive)
+    recursive = false;
 end
 
+if ~exist('filter','var') || isempty(filter)
+    filter = '.*';
+end
+
+if ~exist('pattern','var') || isempty(pattern)
+    pattern = '*.*';
+end
+
+% switch recursive on/off
+if recursive
+    f = @subdir;
+else
+    f= @dir;
+end
+
+% list all files which contain the pattern
 files = f(fullfile(folder, pattern));
 files = files(~ [files.isdir]);
 filenames = {files.name}';
+
+% filter filenames with regexp
+filter = ~cellfun(@isempty,regexp(filenames, filter,'match', 'once'));
+
+% apply filter
+filenames = filenames(filter);
+files = files(filter);
 
 if recursive
   filepaths = filenames;
