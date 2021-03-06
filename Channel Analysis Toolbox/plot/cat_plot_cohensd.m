@@ -28,9 +28,11 @@ M2.n_subj = size(M2.subjects, subj_dim);
 
 C = cohensd(M1.mean, M2.mean, M1.std, M2.std, M1.n_subj, M2.n_subj);
 C(isnan(C)) = 0;
+C = C(options.chanindices, options.chanindices);
 
 if isfield(options, 'corrected') && options.corrected
-  [~, P] = ttest2(M1.subjects, M2.subjects, 'dim', subj_dim);
+  [~, P] = ttest2(M1.subjects(options.chanindices, options.chanindices, 1, :), ...
+      M2.subjects(options.chanindices, options.chanindices, 1, :), 'dim', subj_dim);
 
   P(isnan(P)) = 1;
   logP = -log10(P);
@@ -61,16 +63,21 @@ switch options.plottype
   case 'network'
     hold on
     if strcmp(edgetype, 'dtf')
-      G = digraph(C', E1.channels.labels, 'omitselfloops');
+      G = digraph(C', E1.channels.labels(options.chanindices), 'omitselfloops');
     else
-      G = graph(C', E1.channels.labels, 'omitselfloops');
+      G = graph(C', E1.channels.labels(options.chanindices), 'omitselfloops');
     end
-    p = plot(G, 'XData', E1.channels.positions(:, 1), 'YData', E1.channels.positions(:, 2));
+    p = plot(G, 'XData', E1.channels.positions((options.chanindices), 1), ...
+        'YData', E1.channels.positions((options.chanindices), 2));
     p.LineWidth = 2;
     colormap whitejet_symm;
     colorbar
-    lim = max(abs(G.Edges.Weight));
-    caxis([-lim, lim]);
+    if ~isfield(options, 'scale')
+        options.scale = max(abs(G.Edges.Weight));
+    end
+    if ~isempty(options.scale)
+        caxis([-options.scale, options.scale]);
+    end
     p.EdgeCData = G.Edges.Weight;
     p.EdgeAlpha = 0.9;
 %     p.EdgeColor = [G.Edges.Weight>0, zeros(height(G.Edges), 1), G.Edges.Weight<0];

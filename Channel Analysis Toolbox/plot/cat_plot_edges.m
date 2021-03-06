@@ -48,10 +48,12 @@ else
   subjectname = E.filenames{options.subject}(1:end-4);
 end
 
+M = M(options.chanindices, options.chanindices, :);
+
 bandlabel = [E.bands.labels{options.band} ' '];
 
 
-options.mytext = {[subjectname ' ' E.event], [bandlabel edgetype]};
+options.mytext = {[subjectname ' ' E.paradigm ' ' E.event], [bandlabel edgetype]};
 
 switch options.plottype
   case 'headinhead'
@@ -70,11 +72,12 @@ switch options.plottype
     end
     hold on
     if strcmp(edgetype, 'dtf')
-      G = digraph(M', E.channels.labels, 'omitselfloops');
+      G = digraph(M', E.channels.labels(options.chanindices), 'omitselfloops');
     else
-      G = graph(M', E.channels.labels, 'omitselfloops');
+      G = graph(M', E.channels.labels(options.chanindices), 'omitselfloops');
     end
-    p = plot(G, 'XData', E.channels.positions(:, 1), 'YData', E.channels.positions(:, 2));
+    p = plot(G, 'XData', E.channels.positions(options.chanindices, 2), ...
+    'YData', E.channels.positions(options.chanindices, 1));
     p.LineWidth = 2;
 %     cm = whitejet_symm;
 %     cm = cm(end/2:end, :);
