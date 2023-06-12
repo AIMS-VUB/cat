@@ -13,15 +13,22 @@ function [options] = cat_plot_checkoptions(E, options)
 %                 contain channels.positions.
 %   .subject      scalar, index of specific subject of whom to show the plot, or
 %                 empty to show the group average.
+%   .band         scalar, index of band to plot, or string, name of band in
+%                   bands.labels
 %   .chanindices  vector, selection of channels to plot. Default all channel
 %                 indices
 %   .chanlabels   custom X and Y axis labels, use together with ticks. Default
 %                 all channel labels
 %   .ticks        tick locations. Default at every channel
-%   .scale        color scale, default [0 1]
+%   .scale        color scale, values: 'maxmin' = ± max absolute value
+%                   found in data
+%                   'maxmin' = min and max value found in data
+%                   [min max] = custom min and max value
 %   .fontsize     figure font size, default 14
 %   .linewidth    line width, default 2
 %   .colormap     default 'hot'
+%   .colorbar     set to false to hide the colorbar. Default true.
+%   .showtitle    set to false to hide the title. Default true.
 %   .save         path to folder to save the figure to. Default empty = no save
 %   .savetype     type of file to save to. Default 'pdf'
 
@@ -54,10 +61,16 @@ if ~isfield(options, 'linewidth')
   options.linewidth = 2;
 end
 if ~isfield(options, 'scale')
-  options.scale = [];
+  options.scale = 'maxmin';
 end
 if ~isfield(options, 'colormap')
   options.colormap = 'hot';
+end
+if ~isfield(options, 'colorbar')
+  options.colorbar = true;
+end
+if ~isfield(options, 'showtitle')
+  options.showtitle = true;
 end
 if ~isfield(options, 'plottype')
   options.plottype = 'matrix';

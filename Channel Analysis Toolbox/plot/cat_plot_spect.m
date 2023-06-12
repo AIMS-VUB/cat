@@ -48,7 +48,7 @@ if length(options.subject) > 1
   subjectname = ' average';
   id = '';
 else
-  subjectname = [' (' E.filenames{options.subject}(1:end-4) ')'];
+  subjectname = [' (' strrep(E.filenames{options.subject}(1:end-4), '_', ' ') ')'];
   id = num2str(options.subject);
   id = [repmat('0', 1, 3 - length(id)), id];
 end
@@ -80,7 +80,7 @@ set(findall(gcf, 'type', 'text'), 'fontSize', options.fontsize)
 xlabel('Frequency (Hz)');
 ylabel('Power (\muVA²/Hz)');
 title(plottitle);
-legend(legenda);
+legend(legenda, 'NumColumns', 4);
 
 %% Save it
 if options.save

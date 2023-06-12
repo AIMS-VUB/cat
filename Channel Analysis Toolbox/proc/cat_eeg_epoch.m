@@ -50,8 +50,12 @@ if ~isfield(options, 'ignore_channels')
 end
 
 parfor f = 1 : length(filepaths)
-  eeg = cat_eeg_epoch_file(filepaths{f}, options);
-  pop_saveset(eeg, 'filepath', dst_folder, 'filename', eeg.filename);
+    try
+      eeg = cat_eeg_epoch_file(filepaths{f}, options);
+      pop_saveset(eeg, 'filepath', dst_folder, 'filename', eeg.filename);
+    catch e
+        disp(getReport(e));
+    end
 end
 
 eeg = pop_loadset('filename', filepaths{1});

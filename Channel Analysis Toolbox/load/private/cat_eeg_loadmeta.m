@@ -22,3 +22,4 @@ E.channels.labels = {eeg.chanlocs.labels}';
 E.channels.positions = zeros(length(E.channels.labels), 2);
 [E.channels.positions(:, 1), E.channels.positions(:, 2)] = ...
   cat_eeg_topoplot([], eeg.chanlocs, 'noplot', 'on', 'chaninfo', eeg.chaninfo);
+E.channels.eeglablocs = eeg.chanlocs;
