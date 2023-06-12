@@ -1,4 +1,4 @@
-function eeg = cat_eeg_ica_file(src_file, options)
+function eeg = cat_eeg_ica_file(eeg, options)
 %CAT_EEG_ICA_FILE ICA for artefact rejection
 %
 %   eeg = CAT_EEG_ICA_FILE(src_file, options)
@@ -18,7 +18,9 @@ if ~isfield(options, 'ica')
   options.ica = 'runica';
 end
 
-eeg = pop_loadset('filename', src_file);
+if (ischar(eeg))
+    eeg = pop_loadset('filename', eeg);
+end
 eeg = eeg_checkset(eeg);
 
 eeg = pop_runica(eeg, 'icatype', options.ica, 'extended', 1, 'verbose', 'off');

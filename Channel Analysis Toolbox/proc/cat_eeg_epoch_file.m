@@ -1,4 +1,4 @@
-function eeg = cat_eeg_epoch_file(src_file, options)
+function eeg = cat_eeg_epoch_file(eeg, options)
 %CAT_EEG_EPOCH_FILE Single-file epocher
 %
 %   Creates epochs in marked valid signal parts in a set file, around every occurrence of a
@@ -32,7 +32,9 @@ function eeg = cat_eeg_epoch_file(src_file, options)
 % Last edit: 20200225 Jorne Laton - streamlined
 % Authors:   Jorne Laton
 
-eeg = pop_loadset('filename', src_file);
+if (ischar(eeg))
+    eeg = pop_loadset('filename', eeg);
+end
 eeg = eeg_checkset(eeg);
 
 % Extract epochs

@@ -1,4 +1,4 @@
-function eeg = cat_eeg_preprocess_file(src_file, options)
+function eeg = cat_eeg_preprocess_file(eeg, options)
 %%CAT_EEG_PREPROCESS_FILE Pre-processing for a single EEGlab file
 %   
 %   CAT_EEG_PREPROCESS_FILE(src_file, options) preprocesses all EEGlab
@@ -35,7 +35,9 @@ if nargin < 2
 end
 
 % Load EEGLab set file
-eeg = pop_loadset('filename', src_file);
+if (ischar(eeg))
+    eeg = pop_loadset('filename', eeg);
+end
 eeg = eeg_checkset(eeg);
 
 % Select channels
@@ -43,6 +45,15 @@ if isfield(options, 'chanlabels')
   eeg = pop_select(eeg, 'channel', options.chanlabels);
   eeg = eeg_checkset(eeg);
 end
+
+% Rename selected channels
+if isfield(options, 'newlabels')
+  for i = 1 : length(options.newlabels)
+    eeg.chanlocs(i).labels = options.newlabels{i};
+  end    
+  eeg = eeg_checkset(eeg);
+end
+
 
 % Look up and assign channel positions
 if isfield(options, 'chanpos_lookup')
