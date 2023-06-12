@@ -9,7 +9,7 @@ function E = cat_eeg_loadfolder(src_folder, options)
 %               If omitted, lowest possible number over all files.
 %               Choose 'all' to retain all epochs for each file, this
 %               generates a cell array of 3D matrices in the field epochs.
-
+%   .pattern    only files following this pattern are included.
 %   .robust     set to perform robust averaging of the epochs. Otherwise regular
 %               averaging.
 

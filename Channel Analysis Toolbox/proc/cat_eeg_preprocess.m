@@ -13,6 +13,8 @@ function log = cat_eeg_preprocess(src_folder, dst_folder, options)
 %   Field         Value
 %   .chanlabels   cell array of channel labels to select particular channels. If
 %                 omitted or empty, all channels are used.
+%   .newlabels    cell array of new channel labels, in the same order as
+%                 the selection
 %   .chanpos_lookup  lookup file for channel 3D positions. Default lookup files
 %                 can be found in eeglab/plugins/dipfit, either in standard_BEM or
 %                 standard_BESA.
@@ -32,7 +34,7 @@ function log = cat_eeg_preprocess(src_folder, dst_folder, options)
 %
 %   See also CAT_EEG_PREPROCESS_FILE.
 
-% Last edit: 20200128 Jorne Laton - added try-catch and log
+% Last edit: 20230123 Jorne Laton - add new labels options
 % Authors:   Jorne Laton
 
 cat_check('parpool');

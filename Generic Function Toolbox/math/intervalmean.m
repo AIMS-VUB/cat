@@ -11,10 +11,10 @@ function intmean = intervalmean(x, y, interval)
 %             be used for selection in y. The upper limit of the interval is
 %             inclusive.
 
-%   #2018.01.12 Jorne Laton#
+%   #2023.04.06 Jorne Laton# Bugfix
 
 % subset = x > interval(1) & x < interval(2);
 subset = x > interval(1) & x <= interval(2);
 subset_x = y(subset, :, :, :, :);
 
-intmean = squeeze(mean(subset_x, 2));
+intmean = squeeze(mean(subset_x));

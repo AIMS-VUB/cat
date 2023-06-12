@@ -11,12 +11,12 @@ function [xpeak, ypeak, forced] = findpeak(x, y, options)
 %             Searches the complete vector if omitted.
 %   direction +1 for a positive (default) and -1 for a negative peak
 %   force     if set to 'smallestderivative' and there are no peaks found with
-%							the regular method, then the interval is halved with the same
-%							center and the point with the	smallest derivative is returned.
-%							This point will have the closest resemblance to a peak.
-%							If set to 'weightedcentre', the x value is returned, for which the
-%							sum of the y values corresponding to a smaller x value is as close
-%							as possible to the sum of the y values with a larger x value.
+%               the regular method, then the interval is halved with the same
+%				center and the point with the smallest derivative is returned.
+%				This point will have the closest resemblance to a peak.
+%				If set to 'weightedcentre', the x value is returned, for which the
+%				sum of the y values corresponding to a smaller x value is as close
+%				as possible to the sum of the y values with a larger x value.
 %
 % Output
 %   xpeak, ypeak  coordinates of the peak
