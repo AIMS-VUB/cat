@@ -62,6 +62,7 @@ switch options.plottype
     showcs(C, E1.channels.positions, options);
   case 'network'
     hold on
+    draw_head
     if strcmp(edgetype, 'dtf')
       G = digraph(C', E1.channels.labels(options.chanindices), 'omitselfloops');
     else
@@ -69,9 +70,9 @@ switch options.plottype
     end
     p = plot(G, 'XData', E1.channels.positions((options.chanindices), 1), ...
         'YData', E1.channels.positions((options.chanindices), 2));
-    p.LineWidth = 2;
-    colormap whitejet_symm;
-    colorbar
+    p.LineWidth = options.linewidth;
+    colormap(options.colormap);
+    if (options.colorbar); colorbar; end
     if ~isfield(options, 'scale')
         options.scale = max(abs(G.Edges.Weight));
     end
@@ -86,7 +87,7 @@ switch options.plottype
       p.ArrowSize = 15;
     catch
     end
-    text(-0.5, 0.45, options.mytext);
+    if (options.showtitle); text(-0.5, 0.45, options.mytext); end
     hold off
     axis off
     format_figure(options);
@@ -102,9 +103,9 @@ switch options.plottype
         yline(options.lines(l));
       end
     end
-    colorbar
+    if (options.colorbar); colorbar; end
     colormap(options.colormap)
-    title(options.mytext)
+    if (options.showtitle); title(options.mytext); end
     set(gca, 'XTick', options.ticks, 'XTickLabel', options.chanlabels)
     set(gca, 'YTick', options.ticks, 'YTickLabel', options.chanlabels)
     xtickangle(90)

@@ -71,6 +71,7 @@ switch options.plottype
       options.scale = [-m, m];
     end
     hold on
+    draw_head
     if strcmp(edgetype, 'dtf')
       G = digraph(M', E.channels.labels(options.chanindices), 'omitselfloops');
     else
@@ -82,7 +83,7 @@ switch options.plottype
 %     cm = whitejet_symm;
 %     cm = cm(end/2:end, :);
     colormap(options.colormap);
-    colorbar
+    if (options.colorbar); colorbar; end
 %     lim = max(abs(G.Edges.Weight));
     caxis(options.scale);
     p.EdgeCData = G.Edges.Weight;
@@ -93,7 +94,7 @@ switch options.plottype
       p.ArrowSize = 15;
     catch
     end
-    text(-0.45, 0.55, options.mytext);
+    if (options.showtitle); text(-0.45, 0.55, options.mytext); end
     hold off
     axis off
     format_figure(options);
@@ -103,7 +104,7 @@ switch options.plottype
     else
       imagesc(M)
     end
-    colorbar
+    if (options.colorbar); colorbar; end
     set(gca, 'XTick', options.ticks, 'XTickLabel', options.chanlabels)
     set(gca, 'YTick', options.ticks, 'YTickLabel', options.chanlabels)
     xtickangle(90)
@@ -111,7 +112,7 @@ switch options.plottype
     set(findall(gcf, 'type', 'text'), 'fontSize', options.fontsize)
     axis square
     colormap(options.colormap)
-    title(options.mytext)
+    if (options.showtitle); title(options.mytext); end
 end
 
 % Save it
