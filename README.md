@@ -3,7 +3,7 @@ Matlab toolbox for pre-processing and analysis of channels from any source, such
 Pre-processing functions are only provided for EEG, analysis for any data organised in a CAT struct.
 
 # Generic Function Toolbox (GFT)
-Generic functions, usable anywhere and also in CAT.
+Generic functions used by CAT but usable anywhere.
 
 # Installation
 To install CAT in Matlab, add both folders with subfolders to your Matlab path.
