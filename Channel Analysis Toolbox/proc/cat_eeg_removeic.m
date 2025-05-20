@@ -24,7 +24,11 @@ log = cell(n_files, 1);
 
 [~, ~] = mkdir(dst_folder);
 
-parfor f = 1 : n_files
+% parfor temporarily removed because the code hangs when a error dialog wants to be shown. Without
+% parfor, the dialog box (about no vertical or horizontal EOG channels is shown and can be closed
+% manually
+% TODO resolve this error so that parfor can be used again
+for f = 1 : n_files
   try
     eeg = cat_eeg_removeic_file(filepaths{f}, options);
     pop_saveset(eeg, 'filepath', dst_folder, 'filename', eeg.filename);
