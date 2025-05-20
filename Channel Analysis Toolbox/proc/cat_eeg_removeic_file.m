@@ -14,6 +14,8 @@ function eeg = cat_eeg_removeic_file(eeg, options)
 %   .autoremove   automatically remove marked components
 %   .chanlocs     output of cat_eeg_epoch, used for interpolation of removed bad channels
 %   .chanlabels   labels of channels to retain
+%   .ref          reference to rereference to
+%   .bc_interval  interval for baseline correction in seconds
 
 % Last edit: 20200122 Jorne Laton - created
 % Authors:   Jorne Laton
@@ -66,6 +68,33 @@ end
 % Select channels to retain
 if isfield(options, 'chanlabels')
   eeg = pop_select( eeg, 'channel', options.chanlabels);
+end
+
+% Re-reference
+if isfield(options, 'ref')
+  if length(options.ref) > 1 || ~strcmp(options.ref, 'res')
+    ref = find(ismember({eeg.chanlocs.labels}, options.ref));
+  else % average
+    ref = [];
+  end
+  if isfield(options, 'ref_exclude') && ~isempty(options.ref_exclude)
+    excl = find(ismember({eeg.chanlocs.labels}, options.ref_exclude));
+  else
+    excl = [];
+  end
+  eeg = pop_reref(eeg, ref, 'exclude', excl);
+  eeg = eeg_checkset(eeg);
+  if strcmp(options.ref, 'res')
+    eeg = cat_eeg_rest(eeg, options.G);
+    eeg = eeg_checkset(eeg);
+  end
+end
+
+% Remove baseline
+if isfield(options, 'bc_interval')
+  % Ensure bc_interval is within epoch
+  options.bc_interval = 1000*[max(options.bc_interval(1), eeg.xmin), min(options.bc_interval(2), eeg.xmax)];
+  eeg = pop_rmbase(eeg, options.bc_interval);
 end
 
 eeg = eeg_checkset(eeg);
